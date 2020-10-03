@@ -6,6 +6,7 @@ mod bindings;
 pub mod raw;
 
 use bindings::root::{LogiLed, LOGI_LED_BITMAP_SIZE};
+use phf::phf_map;
 use std::convert::TryInto;
 use std::time::Duration;
 pub use LogiLed::DeviceType;
@@ -23,6 +24,107 @@ pub mod lighting {
     pub const ALL: i32 = LOGI_DEVICETYPE_ALL;
 }
 
+static ASCII_MAP: phf::Map<char, Key> = phf_map! {
+    '`' => Key::Tilde,
+    '~' => Key::Tilde,
+    '1' => Key::One,
+    '!' => Key::One,
+    '2' => Key::Two,
+    '@' => Key::Two,
+    '3' => Key::Three,
+    '#' => Key::Three,
+    '4' => Key::Four,
+    '$' => Key::Four,
+    '5' => Key::Five,
+    '%' => Key::Five,
+    '6' => Key::Six,
+    '^' => Key::Six,
+    '7' => Key::Seven,
+    '&' => Key::Seven,
+    '8' => Key::Eight,
+    '*' => Key::Eight,
+    '9' => Key::Nine,
+    '(' => Key::Nine,
+    '0' => Key::Zero,
+    ')' => Key::Zero,
+    '-' => Key::Minus,
+    '_' => Key::Minus,
+    '=' => Key::Equals,
+    '+' => Key::Equals,
+    '\x08' => Key::Backspace,
+    '\t' => Key::Tab,
+    'q' => Key::Q,
+    'Q' => Key::Q,
+    'w' => Key::W,
+    'W' => Key::W,
+    'e' => Key::E,
+    'E' => Key::E,
+    'r' => Key::R,
+    'R' => Key::R,
+    't' => Key::T,
+    'T' => Key::T,
+    'y' => Key::Y,
+    'Y' => Key::Y,
+    'u' => Key::U,
+    'U' => Key::U,
+    'i' => Key::I,
+    'I' => Key::I,
+    'o' => Key::O,
+    'O' => Key::O,
+    'p' => Key::P,
+    'P' => Key::P,
+    '[' => Key::OpenBracket,
+    '{' => Key::OpenBracket,
+    ']' => Key::CloseBracket,
+    '}' => Key::CloseBracket,
+    '\\' => Key::Backslash,
+    '|' => Key::Backslash,
+    'a' => Key::A,
+    'A' => Key::A,
+    's' => Key::S,
+    'S' => Key::S,
+    'd' => Key::D,
+    'D' => Key::D,
+    'f' => Key::F,
+    'F' => Key::F,
+    'g' => Key::G,
+    'G' => Key::G,
+    'h' => Key::H,
+    'H' => Key::H,
+    'j' => Key::J,
+    'J' => Key::J,
+    'k' => Key::K,
+    'K' => Key::K,
+    'l' => Key::L,
+    'L' => Key::L,
+    ';' => Key::Semicolon,
+    ':' => Key::Semicolon,
+    '\'' => Key::Apostrophe,
+    '"' => Key::Apostrophe,
+    '\n' => Key::Enter,
+    '\r' => Key::Enter,
+    'z' => Key::Z,
+    'Z' => Key::Z,
+    'x' => Key::X,
+    'X' => Key::X,
+    'c' => Key::C,
+    'C' => Key::C,
+    'v' => Key::V,
+    'V' => Key::V,
+    'b' => Key::B,
+    'B' => Key::B,
+    'n' => Key::N,
+    'N' => Key::N,
+    'm' => Key::M,
+    'M' => Key::M,
+    ',' => Key::Comma,
+    '<' => Key::Comma,
+    '.' => Key::Period,
+    '>' => Key::Period,
+    '/' => Key::ForwardSlash,
+    '?' => Key::ForwardSlash,
+};
+
 impl Key {
     fn scan_code() {
         todo!()
@@ -34,6 +136,22 @@ impl Key {
 
     fn quartz_code() {
         todo!()
+    }
+
+    /// Get a `Key` value from an ascii `char`.
+    ///
+    /// This function will panic if `char` is not an ascii value.
+    pub fn from_ascii(char: &char) -> Key {
+        ASCII_MAP
+            .get(char)
+            .expect(format!("Character {} cannot be mapped to keyboard", char).as_str())
+            .clone()
+    }
+}
+
+impl PartialEq<char> for Key {
+    fn eq(&self, other: &char) -> bool {
+        ASCII_MAP.get(other).map_or(false, |key| key == self)
     }
 }
 
@@ -399,7 +517,10 @@ impl Sdk {
 
     /// Sets a list of keys to be ignored when calling `set_lighting_from_bitmap()`.
     pub fn exclude_keys_from_bitmap(&self, keys: &mut [Key]) {
-        assert!(raw::exclude_keys_from_bitmap(keys), "LogiLedExcludeKeysFromBitmap failed");
+        assert!(
+            raw::exclude_keys_from_bitmap(keys),
+            "LogiLedExcludeKeysFromBitmap failed"
+        );
     }
 
     /// Sets the key `key` to the desired color.
