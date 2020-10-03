@@ -1,0 +1,16 @@
+[package]
+name = "lightsync"
+version = "0.1.0"
+authors = ["Liamolucko <liampm32@gmail.com>"]
+edition = "2018"
+build = "src/build.rs"
+links = "LogitechLEDLib"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+
+[build-dependencies]
+bindgen = "0.55.1"
+heck = "0.3.1"
+syn = { version = "1.0.42", features = ["full"] }
+quote = "1.0.7"
