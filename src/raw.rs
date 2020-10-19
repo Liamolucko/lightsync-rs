@@ -2,7 +2,7 @@
 //!
 //! You probably shouldn't use these; they're only here because I plan to use them to create Deno bindings.
 
-use super::bindings::root::*;
+use super::bindings::*;
 use super::Key;
 use std::ffi::OsString;
 use std::os::raw::c_int;
@@ -44,7 +44,7 @@ pub fn init_with_name(name: &str) -> bool {
 ///
 /// If it returns None, means that there is no SDK installed on the user system, or the sdk version could not
 /// be retrieved.
-pub fn get_sdk_version() -> Option<(i32, i32, i32)> {
+pub fn get_sdk_version() -> Option<super::Color> {
     let mut major: c_int = 0;
     let mut minor: c_int = 0;
     let mut patch: c_int = 0;
@@ -107,8 +107,8 @@ pub fn save_current_lighting() -> bool {
 /// For devices that only support a single color, the highest percentage value given of the three colors will
 /// define the intensity. For monochrome backlighting device, Logitech Gaming Software will reduce
 /// proportionally the value of the highest color, according to the user hardware brightness setting.
-pub fn set_lighting(red: i32, green: i32, blue: i32) -> bool {
-    unsafe { LogiLedSetLighting(red, green, blue) }
+pub fn set_lighting(color: super::Color) -> bool {
+    unsafe { LogiLedSetLighting(color.0, color.1, color.2) }
 }
 
 /// Sets lighting on a specific zone for all connected
@@ -134,13 +134,11 @@ pub fn set_lighting(red: i32, green: i32, blue: i32) -> bool {
 /// This function will only affect devices with Zonal Lighting. This excludes keyboards with single key RGB
 /// support. Additionally, setting a zone will affect all connected devices of specified type.
 pub fn set_lighting_for_target_zone(
-    device_type: LogiLed::DeviceType,
+    device_type: super::DeviceType,
     zone: i32,
-    red: i32,
-    green: i32,
-    blue: i32,
+    color: super::Color
 ) -> bool {
-    unsafe { LogiLedSetLightingForTargetZone(device_type, zone, red, green, blue) }
+    unsafe { LogiLedSetLightingForTargetZone(device_type.into(), zone, color.0, color.1, color.2) }
 }
 
 /// Restores the last saved lighting. It should be called after a
@@ -156,8 +154,8 @@ pub fn restore_lighting() -> bool {
     unsafe { LogiLedRestoreLighting() }
 }
 
-pub fn flash_lighting(red: i32, green: i32, blue: i32, duration: i32, interval: i32) -> bool {
-    unsafe { LogiLedFlashLighting(red, green, blue, duration, interval) }
+pub fn flash_lighting(color: super::Color, duration: i32, interval: i32) -> bool {
+    unsafe { LogiLedFlashLighting(color.0, color.1, color.2, duration, interval) }
 }
 
 /// Saves the current lighting, plays the pulsing effect on the
@@ -175,8 +173,8 @@ pub fn flash_lighting(red: i32, green: i32, blue: i32, duration: i32, interval: 
 ///
 /// The function will return false if LogiLedInit() hasn’t been called, if the connection with Logitech Gaming
 /// Software was lost or if another effect is currently running.
-pub fn pulse_lighting(red: i32, green: i32, blue: i32, duration: i32, interval: i32) -> bool {
-    unsafe { LogiLedPulseLighting(red, green, blue, duration, interval) }
+pub fn pulse_lighting(color: super::Color, duration: i32, interval: i32) -> bool {
+    unsafe { LogiLedPulseLighting(color.0, color.1, color.2, duration, interval) }
 }
 
 /// Stops any of the presets effects (started from LogiLedFlashLighting or LogiLedPulseLighting).
@@ -227,8 +225,17 @@ pub fn set_lighting_from_bitmap(bitmap: &mut [u8]) -> bool {
 /// - keys: A preallocated array of LogiLed::KeyNames) to be excluded when calling
 /// LogiLedSetLightingFromKeyName.
 /// - iistCount: the number of items in the iist K’etList
-pub fn exclude_keys_from_bitmap(keys: &mut [LogiLed::KeyName]) -> bool {
-    unsafe { LogiLedExcludeKeysFromBitmap(keys.as_mut_ptr(), keys.len() as i32) }
+pub fn exclude_keys_from_bitmap(keys: &[super::Key]) -> bool {
+    unsafe {
+        LogiLedExcludeKeysFromBitmap(
+            keys.iter()
+                .cloned()
+                .map(super::Key::into)
+                .collect::<Vec<c_int>>()
+                .as_mut_ptr(),
+            keys.len() as c_int,
+        )
+    }
 }
 
 /// Sets the key identified by the scancode
@@ -244,8 +251,8 @@ pub fn exclude_keys_from_bitmap(keys: &mut [LogiLed::KeyName]) -> bool {
 ///
 /// The function will return false if LogiLedInit() hasn’t been called or if the connection with Logitech
 /// Gaming Software was lost.
-pub fn set_lighting_for_key_with_scan_code(code: i32, red: i32, green: i32, blue: i32) -> bool {
-    unsafe { LogiLedSetLightingForKeyWithScanCode(code, red, green, blue) }
+pub fn set_lighting_for_key_with_scan_code(code: i32, color: super::Color) -> bool {
+    unsafe { LogiLedSetLightingForKeyWithScanCode(code, color.0, color.1, color.2) }
 }
 
 /// Sets the key identified by the hid code
@@ -261,8 +268,8 @@ pub fn set_lighting_for_key_with_scan_code(code: i32, red: i32, green: i32, blue
 ///
 /// The function will return false if LogiLedInit() hasn’t been called or if the connection with Logitech
 /// Gaming Software was lost.
-pub fn set_lighting_for_key_with_hid_code(code: i32, red: i32, green: i32, blue: i32) -> bool {
-    unsafe { LogiLedSetLightingForKeyWithHidCode(code, red, green, blue) }
+pub fn set_lighting_for_key_with_hid_code(code: i32, color: super::Color) -> bool {
+    unsafe { LogiLedSetLightingForKeyWithHidCode(code, color.0, color.1, color.2) }
 }
 
 /// Sets the key identified by the quartz code
@@ -278,8 +285,8 @@ pub fn set_lighting_for_key_with_hid_code(code: i32, red: i32, green: i32, blue:
 ///
 /// The function will return false if LogiLedInit() hasn’t been called or if the connection with Logitech
 /// Gaming Software was lost.
-pub fn set_lighting_for_key_with_quartz_code(code: i32, red: i32, green: i32, blue: i32) -> bool {
-    unsafe { LogiLedSetLightingForKeyWithQuartzCode(code, red, green, blue) }
+pub fn set_lighting_for_key_with_quartz_code(code: i32, color: super::Color) -> bool {
+    unsafe { LogiLedSetLightingForKeyWithQuartzCode(code, color.0, color.1, color.2) }
 }
 
 /// Sets the key identified by the code passed
@@ -294,8 +301,8 @@ pub fn set_lighting_for_key_with_quartz_code(code: i32, red: i32, green: i32, bl
 /// If the function succeeds, it returns true. Otherwise false.
 /// The function will return false if LogiLedInit() hasn’t been called or if the connection with Logitech
 /// Gaming Software was lost.
-pub fn set_lighting_for_key_with_key_name(key: Key, red: i32, green: i32, blue: i32) -> bool {
-    unsafe { LogiLedSetLightingForKeyWithKeyName(key, red, green, blue) }
+pub fn set_lighting_for_key_with_key_name(key: Key, color: super::Color) -> bool {
+    unsafe { LogiLedSetLightingForKeyWithKeyName(key.into(), color.0, color.1, color.2) }
 }
 
 /// Saves the current color on the keycode passed as
@@ -311,7 +318,7 @@ pub fn set_lighting_for_key_with_key_name(key: Key, red: i32, green: i32, blue: 
 /// The function will return false if LogiLedInit() hasn’t been called or if the connection with Logitech
 /// Gaming Software was lost.
 pub fn save_lighting_for_key(key: Key) -> bool {
-    unsafe { LogiLedSaveLightingForKey(key) }
+    unsafe { LogiLedSaveLightingForKey(key.into()) }
 }
 
 /// Restores the saved color on the keycode passed as
@@ -327,7 +334,7 @@ pub fn save_lighting_for_key(key: Key) -> bool {
 /// The function will return false if LogiLedInit() hasn’t been called or if the connection with Logitech
 /// Gaming Software was lost.
 pub fn restore_lighting_for_key(key: Key) -> bool {
-    unsafe { LogiLedRestoreLightingForKey(key) }
+    unsafe { LogiLedRestoreLightingForKey(key.into()) }
 }
 
 /// The LogiLedFlashSingleKey() function starts a flashing effect on the key passed as parameter. The
@@ -346,15 +353,8 @@ pub fn restore_lighting_for_key(key: Key) -> bool {
 /// If the function succeeds, it returns true. Otherwise false.
 /// The function will return false if LogiLedInit() hasn’t been called or if the connection with Logitech
 /// Gaming Software was lost.
-pub fn flash_single_key(
-    key: Key,
-    red: i32,
-    green: i32,
-    blue: i32,
-    duration: i32,
-    interval: i32,
-) -> bool {
-    unsafe { LogiLedFlashSingleKey(key, red, green, blue, duration, interval) }
+pub fn flash_single_key(key: Key, color: super::Color, duration: i32, interval: i32) -> bool {
+    unsafe { LogiLedFlashSingleKey(key.into(), color.0, color.1, color.2, duration, interval) }
 }
 
 /// The LogiLedPulseSingleKey() function starts a pulsing effect on the key passed as parameter. The key
@@ -378,24 +378,20 @@ pub fn flash_single_key(
 /// Gaming Software was lost.
 pub fn pulse_single_key(
     key: Key,
-    start_red: i32,
-    start_green: i32,
-    start_blue: i32,
-    end_red: i32,
-    end_green: i32,
-    end_blue: i32,
+    start: super::Color,
+    end: super::Color,
     duration: i32,
     infinite: bool,
 ) -> bool {
     unsafe {
         LogiLedPulseSingleKey(
-            key,
-            start_red,
-            start_green,
-            start_blue,
-            end_red,
-            end_green,
-            end_blue,
+            key.into(),
+            start.0,
+            start.1,
+            start.2,
+            end.0,
+            end.1,
+            end.2,
             duration,
             infinite,
         )
@@ -403,7 +399,7 @@ pub fn pulse_single_key(
 }
 
 pub fn stop_effects_on_key(key: Key) -> bool {
-    unsafe { LogiLedStopEffectsOnKey(key) }
+    unsafe { LogiLedStopEffectsOnKey(key.into()) }
 }
 
 /// Restores the last saved lighting and frees memory used by the SDK.
@@ -452,13 +448,11 @@ pub fn get_config_option_bool(path: &str, default: bool) -> bool {
 
 pub fn get_config_option_color(
     path: &str,
-    default_red: i32,
-    default_green: i32,
-    default_blue: i32,
-) -> (i32, i32, i32) {
-    let mut red = default_red;
-    let mut green = default_green;
-    let mut blue = default_blue;
+    default: super::Color
+) -> super::Color {
+    let mut red = default.0;
+    let mut green = default.1;
+    let mut blue = default.2;
     let os_string = OsString::from(path);
     let path_ptr = os_string.encode_wide().collect::<Vec<u16>>().as_ptr();
     unsafe {
@@ -475,7 +469,10 @@ pub fn get_config_option_range(path: &str, default: i32, min: i32, max: i32) -> 
     let os_string = OsString::from(path);
     let path_ptr = os_string.encode_wide().collect::<Vec<u16>>().as_ptr();
     unsafe {
-        assert!(LogiLedGetConfigOptionRange(path_ptr, &mut value, min, max), "LogiLedGetConfigOptionRange failed");
+        assert!(
+            LogiLedGetConfigOptionRange(path_ptr, &mut value, min, max),
+            "LogiLedGetConfigOptionRange failed"
+        );
     }
     value
 }

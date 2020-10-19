@@ -1,1 +1,195 @@
-# ! [allow (dead_code)] # [allow (non_snake_case , non_camel_case_types , non_upper_case_globals)] pub mod root { # [allow (unused_imports)] use self :: super :: root ; pub const LOGI_LED_BITMAP_WIDTH : i32 = 21 ; pub const LOGI_LED_BITMAP_HEIGHT : i32 = 6 ; pub const LOGI_LED_BITMAP_BYTES_PER_KEY : i32 = 4 ; pub const LOGI_LED_BITMAP_SIZE : i32 = 504 ; pub const LOGI_LED_DURATION_INFINITE : i32 = 0 ; pub const LOGI_DEVICETYPE_MONOCHROME_ORD : i32 = 0 ; pub const LOGI_DEVICETYPE_RGB_ORD : i32 = 1 ; pub const LOGI_DEVICETYPE_PERKEY_RGB_ORD : i32 = 2 ; pub const LOGI_DEVICETYPE_MONOCHROME : i32 = 1 ; pub const LOGI_DEVICETYPE_RGB : i32 = 2 ; pub const LOGI_DEVICETYPE_PERKEY_RGB : i32 = 4 ; pub const LOGI_DEVICETYPE_ALL : i32 = 7 ; pub mod LogiLed { # [allow (unused_imports)] use self :: super :: super :: root ; # [repr (i32)] # [derive (Debug , Copy , Clone , PartialEq , Eq , Hash)] pub enum KeyName { Esc = 1 , F1 = 59 , F2 = 60 , F3 = 61 , F4 = 62 , F5 = 63 , F6 = 64 , F7 = 65 , F8 = 66 , F9 = 67 , F10 = 68 , F11 = 87 , F12 = 88 , PrintScreen = 311 , ScrollLock = 70 , PauseBreak = 325 , Tilde = 41 , One = 2 , Two = 3 , Three = 4 , Four = 5 , Five = 6 , Six = 7 , Seven = 8 , Eight = 9 , Nine = 10 , Zero = 11 , Minus = 12 , Equals = 13 , Backspace = 14 , Insert = 338 , Home = 327 , PageUp = 329 , NumLock = 69 , NumSlash = 309 , NumAsterisk = 55 , NumMinus = 74 , Tab = 15 , Q = 16 , W = 17 , E = 18 , R = 19 , T = 20 , Y = 21 , U = 22 , I = 23 , O = 24 , P = 25 , OpenBracket = 26 , CloseBracket = 27 , Backslash = 43 , KeyboardDelete = 339 , End = 335 , PageDown = 337 , NumSeven = 71 , NumEight = 72 , NumNine = 73 , NumPlus = 78 , CapsLock = 58 , A = 30 , S = 31 , D = 32 , F = 33 , G = 34 , H = 35 , J = 36 , K = 37 , L = 38 , Semicolon = 39 , Apostrophe = 40 , Enter = 28 , NumFour = 75 , NumFive = 76 , NumSix = 77 , LeftShift = 42 , Z = 44 , X = 45 , C = 46 , V = 47 , B = 48 , N = 49 , M = 50 , Comma = 51 , Period = 52 , ForwardSlash = 53 , RightShift = 54 , ArrowUp = 328 , NumOne = 79 , NumTwo = 80 , NumThree = 81 , NumEnter = 284 , LeftControl = 29 , LeftWindows = 347 , LeftAlt = 56 , Space = 57 , RightAlt = 312 , RightWindows = 348 , ApplicationSelect = 349 , RightControl = 285 , ArrowLeft = 331 , ArrowDown = 336 , ArrowRight = 333 , NumZero = 82 , NumPeriod = 83 , G1 = 65521 , G2 = 65522 , G3 = 65523 , G4 = 65524 , G5 = 65525 , G6 = 65526 , G7 = 65527 , G8 = 65528 , G9 = 65529 , GLogo = 1048561 , GBadge = 1048562 , } # [repr (i32)] # [derive (Debug , Copy , Clone , PartialEq , Eq , Hash)] pub enum DeviceType { Keyboard = 0 , Mouse = 3 , Mousemat = 4 , Headset = 8 , Speaker = 14 , } } extern "C" { # [link_name = "\u{1}?LogiLedInit@@YA_NXZ"] pub fn LogiLedInit () -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedInitWithName@@YA_NQEBD@Z"] pub fn LogiLedInitWithName (name : * const :: std :: os :: raw :: c_char) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetSdkVersion@@YA_NPEAH00@Z"] pub fn LogiLedGetSdkVersion (majorNum : * mut :: std :: os :: raw :: c_int , minorNum : * mut :: std :: os :: raw :: c_int , buildNum : * mut :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionNumber@@YA_NPEB_WPEAN@Z"] pub fn LogiLedGetConfigOptionNumber (configPath : * const u16 , defaultValue : * mut f64) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionBool@@YA_NPEB_WPEA_N@Z"] pub fn LogiLedGetConfigOptionBool (configPath : * const u16 , defaultValue : * mut bool) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionColor@@YA_NPEB_WPEAH11@Z"] pub fn LogiLedGetConfigOptionColor (configPath : * const u16 , defaultRed : * mut :: std :: os :: raw :: c_int , defaultGreen : * mut :: std :: os :: raw :: c_int , defaultBlue : * mut :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionRect@@YA_NPEB_WPEAH111@Z"] pub fn LogiLedGetConfigOptionRect (configPath : * const u16 , defaultX : * mut :: std :: os :: raw :: c_int , defaultY : * mut :: std :: os :: raw :: c_int , defaultWidth : * mut :: std :: os :: raw :: c_int , defaultHeight : * mut :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionString@@YA_NPEB_WPEA_WH@Z"] pub fn LogiLedGetConfigOptionString (configPath : * const u16 , defaultValue : * mut u16 , bufferSize : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionKeyInput@@YA_NPEB_WPEA_WH@Z"] pub fn LogiLedGetConfigOptionKeyInput (configPath : * const u16 , defaultValue : * mut u16 , bufferSize : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionSelect@@YA_NPEB_WPEA_WPEAH0H@Z"] pub fn LogiLedGetConfigOptionSelect (configPath : * const u16 , defaultValue : * mut u16 , valueSize : * mut :: std :: os :: raw :: c_int , values : * const u16 , bufferSize : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedGetConfigOptionRange@@YA_NPEB_WPEAHHH@Z"] pub fn LogiLedGetConfigOptionRange (configPath : * const u16 , defaultValue : * mut :: std :: os :: raw :: c_int , min : :: std :: os :: raw :: c_int , max : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetConfigOptionLabel@@YA_NPEB_WPEA_W@Z"] pub fn LogiLedSetConfigOptionLabel (configPath : * const u16 , label : * mut u16) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetTargetDevice@@YA_NH@Z"] pub fn LogiLedSetTargetDevice (targetDevice : :: std :: os :: raw :: c_int) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSaveCurrentLighting@@YA_NXZ"] pub fn LogiLedSaveCurrentLighting () -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetLighting@@YA_NHHH@Z"] pub fn LogiLedSetLighting (redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedRestoreLighting@@YA_NXZ"] pub fn LogiLedRestoreLighting () -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedFlashLighting@@YA_NHHHHH@Z"] pub fn LogiLedFlashLighting (redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int , milliSecondsDuration : :: std :: os :: raw :: c_int , milliSecondsInterval : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedPulseLighting@@YA_NHHHHH@Z"] pub fn LogiLedPulseLighting (redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int , milliSecondsDuration : :: std :: os :: raw :: c_int , milliSecondsInterval : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedStopEffects@@YA_NXZ"] pub fn LogiLedStopEffects () -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetLightingFromBitmap@@YA_NQEAE@Z"] pub fn LogiLedSetLightingFromBitmap (bitmap : * mut :: std :: os :: raw :: c_uchar) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetLightingForKeyWithScanCode@@YA_NHHHH@Z"] pub fn LogiLedSetLightingForKeyWithScanCode (keyCode : :: std :: os :: raw :: c_int , redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetLightingForKeyWithHidCode@@YA_NHHHH@Z"] pub fn LogiLedSetLightingForKeyWithHidCode (keyCode : :: std :: os :: raw :: c_int , redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetLightingForKeyWithQuartzCode@@YA_NHHHH@Z"] pub fn LogiLedSetLightingForKeyWithQuartzCode (keyCode : :: std :: os :: raw :: c_int , redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetLightingForKeyWithKeyName@@YA_NW4KeyName@LogiLed@@HHH@Z"] pub fn LogiLedSetLightingForKeyWithKeyName (keyName : root :: LogiLed :: KeyName , redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSaveLightingForKey@@YA_NW4KeyName@LogiLed@@@Z"] pub fn LogiLedSaveLightingForKey (keyName : root :: LogiLed :: KeyName) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedRestoreLightingForKey@@YA_NW4KeyName@LogiLed@@@Z"] pub fn LogiLedRestoreLightingForKey (keyName : root :: LogiLed :: KeyName) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedExcludeKeysFromBitmap@@YA_NPEAW4KeyName@LogiLed@@H@Z"] pub fn LogiLedExcludeKeysFromBitmap (keyList : * mut root :: LogiLed :: KeyName , listCount : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedFlashSingleKey@@YA_NW4KeyName@LogiLed@@HHHHH@Z"] pub fn LogiLedFlashSingleKey (keyName : root :: LogiLed :: KeyName , redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int , msDuration : :: std :: os :: raw :: c_int , msInterval : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedPulseSingleKey@@YA_NW4KeyName@LogiLed@@HHHHHHH_N@Z"] pub fn LogiLedPulseSingleKey (keyName : root :: LogiLed :: KeyName , startRedPercentage : :: std :: os :: raw :: c_int , startGreenPercentage : :: std :: os :: raw :: c_int , startBluePercentage : :: std :: os :: raw :: c_int , finishRedPercentage : :: std :: os :: raw :: c_int , finishGreenPercentage : :: std :: os :: raw :: c_int , finishBluePercentage : :: std :: os :: raw :: c_int , msDuration : :: std :: os :: raw :: c_int , isInfinite : bool ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedStopEffectsOnKey@@YA_NW4KeyName@LogiLed@@@Z"] pub fn LogiLedStopEffectsOnKey (keyName : root :: LogiLed :: KeyName) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedSetLightingForTargetZone@@YA_NW4DeviceType@LogiLed@@HHHH@Z"] pub fn LogiLedSetLightingForTargetZone (deviceType : root :: LogiLed :: DeviceType , zone : :: std :: os :: raw :: c_int , redPercentage : :: std :: os :: raw :: c_int , greenPercentage : :: std :: os :: raw :: c_int , bluePercentage : :: std :: os :: raw :: c_int ,) -> bool ; } extern "C" { # [link_name = "\u{1}?LogiLedShutdown@@YAXXZ"] pub fn LogiLedShutdown () ; } }
+use std::os::raw::{c_int, c_char, c_uchar};
+
+extern "C" {
+    #[link_name = "\u{1}?LogiLedInit@@YA_NXZ"]
+    pub fn LogiLedInit() -> bool;
+
+    #[link_name = "\u{1}?LogiLedInitWithName@@YA_NQEBD@Z"]
+    pub fn LogiLedInitWithName(name: *const c_char) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetSdkVersion@@YA_NPEAH00@Z"]
+    pub fn LogiLedGetSdkVersion(
+        majorNum: *mut c_int,
+        minorNum: *mut c_int,
+        buildNum: *mut c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionNumber@@YA_NPEB_WPEAN@Z"]
+    pub fn LogiLedGetConfigOptionNumber(configPath: *const u16, defaultValue: *mut f64) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionBool@@YA_NPEB_WPEA_N@Z"]
+    pub fn LogiLedGetConfigOptionBool(configPath: *const u16, defaultValue: *mut bool) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionColor@@YA_NPEB_WPEAH11@Z"]
+    pub fn LogiLedGetConfigOptionColor(
+        configPath: *const u16,
+        defaultRed: *mut c_int,
+        defaultGreen: *mut c_int,
+        defaultBlue: *mut c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionRect@@YA_NPEB_WPEAH111@Z"]
+    pub fn LogiLedGetConfigOptionRect(
+        configPath: *const u16,
+        defaultX: *mut c_int,
+        defaultY: *mut c_int,
+        defaultWidth: *mut c_int,
+        defaultHeight: *mut c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionString@@YA_NPEB_WPEA_WH@Z"]
+    pub fn LogiLedGetConfigOptionString(
+        configPath: *const u16,
+        defaultValue: *mut u16,
+        bufferSize: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionKeyInput@@YA_NPEB_WPEA_WH@Z"]
+    pub fn LogiLedGetConfigOptionKeyInput(
+        configPath: *const u16,
+        defaultValue: *mut u16,
+        bufferSize: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionSelect@@YA_NPEB_WPEA_WPEAH0H@Z"]
+    pub fn LogiLedGetConfigOptionSelect(
+        configPath: *const u16,
+        defaultValue: *mut u16,
+        valueSize: *mut c_int,
+        values: *const u16,
+        bufferSize: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedGetConfigOptionRange@@YA_NPEB_WPEAHHH@Z"]
+    pub fn LogiLedGetConfigOptionRange(
+        configPath: *const u16,
+        defaultValue: *mut c_int,
+        min: c_int,
+        max: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetConfigOptionLabel@@YA_NPEB_WPEA_W@Z"]
+    pub fn LogiLedSetConfigOptionLabel(configPath: *const u16, label: *mut u16) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetTargetDevice@@YA_NH@Z"]
+    pub fn LogiLedSetTargetDevice(targetDevice: c_int) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSaveCurrentLighting@@YA_NXZ"]
+    pub fn LogiLedSaveCurrentLighting() -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetLighting@@YA_NHHH@Z"]
+    pub fn LogiLedSetLighting(
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedRestoreLighting@@YA_NXZ"]
+    pub fn LogiLedRestoreLighting() -> bool;
+
+    #[link_name = "\u{1}?LogiLedFlashLighting@@YA_NHHHHH@Z"]
+    pub fn LogiLedFlashLighting(
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+        milliSecondsDuration: c_int,
+        milliSecondsInterval: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedPulseLighting@@YA_NHHHHH@Z"]
+    pub fn LogiLedPulseLighting(
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+        milliSecondsDuration: c_int,
+        milliSecondsInterval: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedStopEffects@@YA_NXZ"]
+    pub fn LogiLedStopEffects() -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetLightingFromBitmap@@YA_NQEAE@Z"]
+    pub fn LogiLedSetLightingFromBitmap(bitmap: *mut c_uchar) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetLightingForKeyWithScanCode@@YA_NHHHH@Z"]
+    pub fn LogiLedSetLightingForKeyWithScanCode(
+        keyCode: c_int,
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetLightingForKeyWithHidCode@@YA_NHHHH@Z"]
+    pub fn LogiLedSetLightingForKeyWithHidCode(
+        keyCode: c_int,
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetLightingForKeyWithQuartzCode@@YA_NHHHH@Z"]
+    pub fn LogiLedSetLightingForKeyWithQuartzCode(
+        keyCode: c_int,
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetLightingForKeyWithKeyName@@YA_NW4KeyName@LogiLed@@HHH@Z"]
+    pub fn LogiLedSetLightingForKeyWithKeyName(
+        keyName: c_int,
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSaveLightingForKey@@YA_NW4KeyName@LogiLed@@@Z"]
+    pub fn LogiLedSaveLightingForKey(keyName: c_int) -> bool;
+
+    #[link_name = "\u{1}?LogiLedRestoreLightingForKey@@YA_NW4KeyName@LogiLed@@@Z"]
+    pub fn LogiLedRestoreLightingForKey(keyName: c_int) -> bool;
+
+    #[link_name = "\u{1}?LogiLedExcludeKeysFromBitmap@@YA_NPEAW4KeyName@LogiLed@@H@Z"]
+    pub fn LogiLedExcludeKeysFromBitmap(
+        keyList: *mut c_int,
+        listCount: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedFlashSingleKey@@YA_NW4KeyName@LogiLed@@HHHHH@Z"]
+    pub fn LogiLedFlashSingleKey(
+        keyName: c_int,
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+        msDuration: c_int,
+        msInterval: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedPulseSingleKey@@YA_NW4KeyName@LogiLed@@HHHHHHH_N@Z"]
+    pub fn LogiLedPulseSingleKey(
+        keyName: c_int,
+        startRedPercentage: c_int,
+        startGreenPercentage: c_int,
+        startBluePercentage: c_int,
+        finishRedPercentage: c_int,
+        finishGreenPercentage: c_int,
+        finishBluePercentage: c_int,
+        msDuration: c_int,
+        isInfinite: bool,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedStopEffectsOnKey@@YA_NW4KeyName@LogiLed@@@Z"]
+    pub fn LogiLedStopEffectsOnKey(keyName: c_int) -> bool;
+
+    #[link_name = "\u{1}?LogiLedSetLightingForTargetZone@@YA_NW4DeviceType@LogiLed@@HHHH@Z"]
+    pub fn LogiLedSetLightingForTargetZone(
+        deviceType: c_int,
+        zone: c_int,
+        redPercentage: c_int,
+        greenPercentage: c_int,
+        bluePercentage: c_int,
+    ) -> bool;
+
+    #[link_name = "\u{1}?LogiLedShutdown@@YAXXZ"]
+    pub fn LogiLedShutdown();
+}

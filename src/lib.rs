@@ -5,23 +5,153 @@
 mod bindings;
 pub mod raw;
 
-use bindings::root::{LogiLed, LOGI_LED_BITMAP_SIZE};
+use num_enum::{IntoPrimitive, TryFromPrimitive};
 use phf::phf_map;
 use std::convert::TryInto;
 use std::time::Duration;
-pub use LogiLed::DeviceType;
-pub use LogiLed::KeyName as Key;
 
-pub const BITMAP_SIZE: i32 = LOGI_LED_BITMAP_SIZE;
+const BITMAP_WIDTH: i32 = 21;
+const BITMAP_HEIGHT: i32 = 6;
+const BYTES_PER_KEY: i32 = 4;
+
+pub const BITMAP_SIZE: i32 = BITMAP_WIDTH * BITMAP_HEIGHT * BYTES_PER_KEY;
 
 /// Types of devices with different kinds of lighting.
 pub mod lighting {
-    use super::bindings::root::*;
+    pub const MONOCHROME: i32 = 0b001;
+    pub const RGB: i32 = 0b010;
+    pub const PERKEY_RGB: i32 = 0b100;
+    pub const ALL: i32 = 0b111;
+}
 
-    pub const MONOCHROME: i32 = LOGI_DEVICETYPE_MONOCHROME;
-    pub const RGB: i32 = LOGI_DEVICETYPE_RGB;
-    pub const PERKEY_RGB: i32 = LOGI_DEVICETYPE_PERKEY_RGB;
-    pub const ALL: i32 = LOGI_DEVICETYPE_ALL;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, IntoPrimitive, TryFromPrimitive)]
+pub enum Key {
+    Esc = 1,
+    One = 2,
+    Two = 3,
+    Three = 4,
+    Four = 5,
+    Five = 6,
+    Six = 7,
+    Seven = 8,
+    Eight = 9,
+    Nine = 10,
+    Zero = 11,
+    Minus = 12,
+    Equals = 13,
+    Backspace = 14,
+    Tab = 15,
+    Q = 16,
+    W = 17,
+    E = 18,
+    R = 19,
+    T = 20,
+    Y = 21,
+    U = 22,
+    I = 23,
+    O = 24,
+    P = 25,
+    OpenBracket = 26,
+    CloseBracket = 27,
+    Enter = 28,
+    LeftControl = 29,
+    A = 30,
+    S = 31,
+    D = 32,
+    F = 33,
+    G = 34,
+    H = 35,
+    J = 36,
+    K = 37,
+    L = 38,
+    Semicolon = 39,
+    Apostrophe = 40,
+    Tilde = 41,
+    LeftShift = 42,
+    Backslash = 43,
+    Z = 44,
+    X = 45,
+    C = 46,
+    V = 47,
+    B = 48,
+    N = 49,
+    M = 50,
+    Comma = 51,
+    Period = 52,
+    ForwardSlash = 53,
+    RightShift = 54,
+    NumAsterisk = 55,
+    LeftAlt = 56,
+    Space = 57,
+    CapsLock = 58,
+    F1 = 59,
+    F2 = 60,
+    F3 = 61,
+    F4 = 62,
+    F5 = 63,
+    F6 = 64,
+    F7 = 65,
+    F8 = 66,
+    F9 = 67,
+    F10 = 68,
+    NumLock = 69,
+    ScrollLock = 70,
+    NumSeven = 71,
+    NumEight = 72,
+    NumNine = 73,
+    NumMinus = 74,
+    NumFour = 75,
+    NumFive = 76,
+    NumSix = 77,
+    NumPlus = 78,
+    NumOne = 79,
+    NumTwo = 80,
+    NumThree = 81,
+    NumZero = 82,
+    NumPeriod = 83,
+    F11 = 87,
+    F12 = 88,
+    NumEnter = 284,
+    RightControl = 285,
+    NumSlash = 309,
+    PrintScreen = 311,
+    RightAlt = 312,
+    PauseBreak = 325,
+    Home = 327,
+    ArrowUp = 328,
+    PageUp = 329,
+    ArrowLeft = 331,
+    ArrowRight = 333,
+    End = 335,
+    ArrowDown = 336,
+    PageDown = 337,
+    Insert = 338,
+    KeyboardDelete = 339,
+    LeftWindows = 347,
+    RightWindows = 348,
+    ApplicationSelect = 349,
+    G1 = 65521,
+    G2 = 65522,
+    G3 = 65523,
+    G4 = 65524,
+    G5 = 65525,
+    G6 = 65526,
+    G7 = 65527,
+    G8 = 65528,
+    G9 = 65529,
+    GLogo = 1048561,
+    GBadge = 1048562,
+}
+
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, IntoPrimitive, TryFromPrimitive)]
+pub enum DeviceType {
+    Keyboard = 0,
+    Mouse = 3,
+    Mousemat = 4,
+    Headset = 8,
+    Speaker = 14,
 }
 
 static ASCII_MAP: phf::Map<char, Key> = phf_map! {
@@ -156,25 +286,7 @@ impl PartialEq<char> for Key {
 }
 
 /// A simple struct to represent an RGB color.
-pub struct Color {
-    pub red: i32,
-    pub green: i32,
-    pub blue: i32,
-}
-impl Color {
-    pub fn new(red: i32, green: i32, blue: i32) -> Color {
-        Color { red, green, blue }
-    }
-}
-impl From<(i32, i32, i32)> for Color {
-    fn from(color: (i32, i32, i32)) -> Self {
-        Color {
-            red: color.0,
-            green: color.1,
-            blue: color.2,
-        }
-    }
-}
+pub type Color = (i32, i32, i32);
 
 /// This empty struct represents an initialised Logitech LED SDK.
 ///
@@ -292,10 +404,7 @@ impl Sdk {
     /// sdk.set_lighting(lightsync::Color::new(0, 100, 0));
     /// ```
     pub fn set_lighting(&self, color: Color) {
-        assert!(
-            raw::set_lighting(color.red, color.green, color.blue),
-            "LogiLedSetLighting failed"
-        );
+        assert!(raw::set_lighting(color), "LogiLedSetLighting failed");
     }
 
     /// Sets the lighting in a specific zone of a device.
@@ -312,13 +421,7 @@ impl Sdk {
     /// ```
     pub fn set_lighting_for_zone(&self, device_type: DeviceType, zone: i32, color: Color) {
         assert!(
-            raw::set_lighting_for_target_zone(
-                device_type,
-                zone,
-                color.red,
-                color.green,
-                color.blue
-            ),
+            raw::set_lighting_for_target_zone(device_type, zone, color),
             "LogiLedSetLightingForTargetZone failed"
         )
     }
@@ -404,9 +507,7 @@ impl Sdk {
     pub fn flash_lighting(&self, color: Color, duration: Duration, interval: Duration) {
         assert!(
             raw::flash_lighting(
-                color.red,
-                color.green,
-                color.blue,
+                color,
                 duration
                     .as_millis()
                     .try_into()
@@ -442,9 +543,7 @@ impl Sdk {
     pub fn pulse_lighting(&self, color: Color, duration: Duration, interval: Duration) {
         assert!(
             raw::pulse_lighting(
-                color.red,
-                color.green,
-                color.blue,
+                color,
                 duration
                     .as_millis()
                     .try_into()
@@ -537,7 +636,7 @@ impl Sdk {
     /// ```
     pub fn set_lighting_for_key(&self, key: Key, color: Color) {
         assert!(
-            raw::set_lighting_for_key_with_key_name(key, color.red, color.green, color.blue),
+            raw::set_lighting_for_key_with_key_name(key, color),
             "LogiLedSetLightingForKeyWithKeyName failed"
         );
     }
@@ -617,9 +716,7 @@ impl Sdk {
         assert!(
             raw::flash_single_key(
                 key,
-                color.red,
-                color.green,
-                color.blue,
+                color,
                 duration
                     .as_millis()
                     .try_into()
@@ -672,12 +769,8 @@ impl Sdk {
         assert!(
             raw::pulse_single_key(
                 key,
-                start.red,
-                start.green,
-                start.blue,
-                end.red,
-                end.green,
-                end.blue,
+                start,
+                end,
                 duration
                     .as_millis()
                     .try_into()
@@ -731,41 +824,6 @@ impl Sdk {
     }
 }
 
-/// If there isn't already another instance running,
-/// makes necessary initializations and disables any existing effects before returning an `Sdk` object.
-///
-/// If it returns None, it means that either the connection with the SDK is broken
-/// or there's already an instance of the SDK running.
-///
-/// # Example
-/// ```
-/// let sdk = lightsync::Sdk::init().unwrap();
-/// // do stuff
-/// ```
-pub fn init() -> Option<Sdk> {
-    Sdk::init()
-}
-
-/// If there isn't already another instance running,
-/// makes necessary initializations and disables any existing effects before returning an `Sdk` object.
-///
-/// It registers the integration with the name provided.
-///
-/// If it returns None, it means that either the connection with the SDK is broken
-/// or there's already an instance of the SDK running.
-///
-/// # Panics
-/// Panics if `name` cannot be converted to a C string (contains any null bytes).
-///
-/// # Example
-/// ```
-/// let sdk = lightsync::Sdk::init_with_name("foo").unwrap();
-/// // do stuff
-/// ```
-pub fn init_with_name(name: &str) -> Option<Sdk> {
-    Sdk::init_with_name(name)
-}
-
 // TODO: I could maybe define a trait `ConfigOption` which makes these functions generic.
 // not sure if that's a good thing though and some (range) have custom config
 
@@ -779,15 +837,11 @@ pub fn init_with_name(name: &str) -> Option<Sdk> {
 /// (e.g. "Colors/Terrorist" would be the option "Terrorist" in the section "Colors").
 ///
 /// You can also specify a label, if you want it to be different to the path.
-pub fn get_color_option(
-    path: &str,
-    default: (i32, i32, i32),
-    label: Option<&str>,
-) -> (i32, i32, i32) {
+pub fn get_color_option(path: &str, default: Color, label: Option<&str>) -> Color {
     if let Some(label) = label {
         raw::set_config_option_label(path, label);
     }
-    raw::get_config_option_color(path, default.0, default.1, default.2)
+    raw::get_config_option_color(path, default)
 }
 
 /// Gets a boolean chosen by the user, or `default` if not chosen.
